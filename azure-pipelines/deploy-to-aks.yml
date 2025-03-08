@@ -1,0 +1,40 @@
+trigger:
+  - main  
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  azureSubscription: 'AZURE_SERVICE_CONNECTION'  
+  resourceGroupName: 'my-rg'
+  aksClusterName: 'my-aks'
+  acrName: 'myacr'
+  imageName: 'tomcat'
+  imageTag: 'v1'
+
+stages:
+- stage: DeployToAKS
+  displayName: 'Deploy Application to AKS'
+  jobs:
+  - job: Deploy
+    displayName: 'Deploy to AKS'
+    steps:
+    
+    - task: AzureCLI@2
+      displayName: 'Login to Azure and Get AKS Credentials'
+      inputs:
+        azureSubscription: $(azureSubscription)
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          az aks get-credentials --resource-group $(resourceGroupName) --name $(aksClusterName)
+          kubectl config view
+
+    - script: |
+        kubectl apply -f k8s/deployment.yaml
+      displayName: 'Deploy Application to AKS'
+
+    - script: |
+        kubectl get pods
+        kubectl get service tomcat-service
+      displayName: 'Check Deployment Status'
