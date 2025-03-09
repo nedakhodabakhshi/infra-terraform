@@ -1,51 +1,42 @@
 trigger:
-  - main  
+  - main
 
 pool:
-  vmImage: 'ubuntu-22.04'
+  vmImage: 'ubuntu-latest'
 
 variables:
-  azureSubscription: 'my-connection'  
-  resourceGroupName: 'my-rg'
-  aksClusterName: 'my-aks'
-  acrName: 'myacr'
-  imageName: 'tomcat'
-  imageTag: 'v1'
+  azureSubscription: 'AZURE_SERVICE_CONNECTION'
+  terraformWorkingDirectory: 'environments/dev/'  # مسیر صحیح
 
 stages:
-- stage: DeployToAKS
-  displayName: 'Deploy Application to AKS'
+- stage: TerraformDeployment
+  displayName: 'Deploy Azure Resources with Terraform'
   jobs:
-  - job: Deploy
-    displayName: 'Deploy to AKS'
+  - job: ApplyTerraform
+    displayName: 'Apply Terraform Configuration'
     steps:
-
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: '3.x'
-      displayName: 'Ensure Python is installed'
+    - checkout: self  # کلون کردن ریپازیتوری از GitHub
 
     - task: AzureCLI@2
-      displayName: 'Login to Azure and Get AKS Credentials'
+      displayName: 'Login to Azure'
       inputs:
         azureSubscription: $(azureSubscription)
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
-          az aks get-credentials --resource-group $(resourceGroupName) --name $(aksClusterName) --overwrite-existing
-          kubectl config current-context
-          kubectl get nodes
+          az login --service-principal -u $(ARM_CLIENT_ID) -p $(ARM_CLIENT_SECRET) --tenant $(ARM_TENANT_ID)
 
     - script: |
-        kubectl config view
-        kubectl cluster-info
-      displayName: 'Check AKS Connection'
+        cd $(terraformWorkingDirectory)
+        terraform init
+      displayName: 'Initialize Terraform'
 
     - script: |
-        kubectl apply -f k8s/deployment.yaml
-      displayName: 'Deploy Application to AKS'
+        cd $(terraformWorkingDirectory)
+        terraform plan -out=tfplan
+      displayName: 'Plan Terraform Changes'
 
     - script: |
-        kubectl get pods
-        kubectl get service tomcat-service
-      displayName: 'Check Deployment Status'
+        cd $(terraformWorkingDirectory)
+        terraform apply -auto-approve tfplan
+      displayName: 'Apply Terraform Changes'
