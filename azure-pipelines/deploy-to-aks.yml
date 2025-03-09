@@ -51,4 +51,3 @@ stages:
         cd $(terraformWorkingDirectory)
         terraform apply -auto-approve tfplan || exit 1
       displayName: 'Apply Terraform Changes'
-
