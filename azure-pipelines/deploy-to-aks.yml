@@ -5,7 +5,7 @@ pool:
   vmImage: 'ubuntu-22.04'
 
 variables:
-  azureSubscription: 'AZURE_SERVICE_CONNECTION'
+  azureSubscription: 'my-connection'
   terraformWorkingDirectory: 'environments/dev/'  
 
 stages:
