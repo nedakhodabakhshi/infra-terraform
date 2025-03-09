@@ -7,7 +7,7 @@ pool:
 variables:
   - group: my-secrets  
   - name: azureSubscription
-    value: 'my-connection'  # مقدار درست `Service Connection` را جایگزین کنید
+    value: 'sconnection'  
   - name: terraformWorkingDirectory
     value: 'environments/dev/'
 
