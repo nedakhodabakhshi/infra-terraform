@@ -7,7 +7,7 @@ pool:
 variables:
   - group: my-secrets  
   - name: azureSubscription
-    value: 'sconnection'  
+    value: 'sconnection'
   - name: terraformWorkingDirectory
     value: 'environments/dev/'
 
@@ -39,7 +39,8 @@ stages:
     - script: |
         cd $(terraformWorkingDirectory)
         terraform init
-      displayName: 'Initialize Terraform'
+        terraform validate || exit 1
+      displayName: 'Initialize and Validate Terraform'
 
     - script: |
         cd $(terraformWorkingDirectory)
@@ -50,6 +51,7 @@ stages:
         cd $(terraformWorkingDirectory)
         if [ -f tfplan ]; then
           terraform apply -auto-approve tfplan || exit 1
+          terraform output
         else
           echo "Terraform plan file not found! Skipping apply step."
           exit 1
