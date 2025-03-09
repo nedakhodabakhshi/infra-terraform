@@ -8,7 +8,7 @@ variables:
   - group: my-secrets  
     allowAccess: true
   - name: azureSubscription
-    value: 'my-secrets'
+    value: 'sconnection'   
   - name: terraformWorkingDirectory
     value: 'environments/dev/'
 
@@ -24,6 +24,7 @@ stages:
     - task: AzureCLI@2
       displayName: 'Login to Azure'
       inputs:
+        azureSubscription: $(azureSubscription)
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
@@ -43,10 +44,11 @@ stages:
 
     - script: |
         cd $(terraformWorkingDirectory)
-        terraform plan -out=tfplan
+        terraform plan -out=tfplan || exit 1
       displayName: 'Plan Terraform Changes'
 
     - script: |
         cd $(terraformWorkingDirectory)
-        terraform apply -auto-approve tfplan
+        terraform apply -auto-approve tfplan || exit 1
       displayName: 'Apply Terraform Changes'
+
