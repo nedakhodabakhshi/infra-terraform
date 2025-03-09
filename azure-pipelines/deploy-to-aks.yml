@@ -6,6 +6,7 @@ pool:
 
 variables:
   - group: my-secrets  
+    allowAccess: true
   - name: azureSubscription
     value: 'my-connection'
   - name: terraformWorkingDirectory
