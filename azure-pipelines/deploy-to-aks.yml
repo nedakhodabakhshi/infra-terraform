@@ -5,7 +5,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  - group: my-secrets  # اضافه کردن Variable Group که شامل ARM_CLIENT_ID, ARM_CLIENT_SECRET و ARM_TENANT_ID است
+  - group: my-secrets  
   - name: azureSubscription
     value: 'my-connection'
   - name: terraformWorkingDirectory
