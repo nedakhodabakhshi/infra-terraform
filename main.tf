@@ -11,8 +11,8 @@ terraform {
   }
 
   backend "azurerm" {
-    resource_group_name   = "vprofile-rg"
-    storage_account_name  = "vprofilestorage"
+    resource_group_name   = "my-rg"
+    storage_account_name  = "mytorage"
     container_name        = "tfstate"
     key                   = "terraform.tfstate"
   }
