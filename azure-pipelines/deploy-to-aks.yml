@@ -5,6 +5,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
+- group: my-secrets
   azureSubscription: 'sconnection'
   terraformWorkingDirectory: 'environments/dev/'  
 
