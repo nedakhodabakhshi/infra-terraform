@@ -8,7 +8,7 @@ variables:
   - group: my-secrets  
     allowAccess: true
   - name: azureSubscription
-    value: 'my-connection'
+    value: 'my-secrets'
   - name: terraformWorkingDirectory
     value: 'environments/dev/'
 
