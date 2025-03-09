@@ -6,7 +6,7 @@ pool:
 
 variables:
   azureSubscription: 'AZURE_SERVICE_CONNECTION'
-  terraformWorkingDirectory: 'environments/dev/'  # مسیر صحیح
+  terraformWorkingDirectory: 'environments/dev/'  
 
 stages:
 - stage: TerraformDeployment
@@ -15,7 +15,7 @@ stages:
   - job: ApplyTerraform
     displayName: 'Apply Terraform Configuration'
     steps:
-    - checkout: self  # کلون کردن ریپازیتوری از GitHub
+    - checkout: self  
 
     - task: AzureCLI@2
       displayName: 'Login to Azure'
