@@ -2,7 +2,7 @@ trigger:
   - main
 
 pool:
-  vmImage: 'ubuntu-22.04'
+  vmImage: 'ubuntu-latest'
 
 variables:
   azureSubscription: 'my-connection'
@@ -25,6 +25,12 @@ stages:
         scriptLocation: inlineScript
         inlineScript: |
           az login --service-principal -u $(ARM_CLIENT_ID) -p $(ARM_CLIENT_SECRET) --tenant $(ARM_TENANT_ID)
+          az account set --subscription $(azureSubscription)
+
+    - script: |
+        echo "ARM_CLIENT_ID: $(ARM_CLIENT_ID)"
+        echo "ARM_TENANT_ID: $(ARM_TENANT_ID)"
+      displayName: 'Debug Environment Variables'
 
     - script: |
         cd $(terraformWorkingDirectory)
